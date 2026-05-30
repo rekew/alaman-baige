@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -7,6 +9,17 @@ builder.Services.AddAuthorization();
 //Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//Database
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    ).UseSnakeCaseNamingConvention();
+
+});
+
 
 var app = builder.Build();
 
