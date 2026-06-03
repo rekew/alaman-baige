@@ -14,48 +14,109 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterDto dto)
+    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
-        var AuthResponseDto = await _authService.Register(dto);
+        var result = await _authService.Register(dto);
 
-        if (AuthResponseDto is null)
+        if (result is null)
         {
             return Conflict("User already exists");
         }
 
-        return Ok(AuthResponseDto);
+        return Created();
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto dto)
     {
-        var AuthResponseDto = await _authService.Login(dto);
+        var response = await _authService.Login(dto);
 
-        if (AuthResponseDto is null)
+        if (response is null)
         {
             return Unauthorized("Invalid credentials");
         }
 
-        return Ok(AuthResponseDto);
+        Response.Cookies.Append(
+            "access_token",
+            response.AccessToken,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddMinutes(15)
+            });
+
+        Response.Cookies.Append(
+            "refresh_token",
+            response.RefreshToken,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
+        return Ok();
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh([FromBody] RefreshRequestDto dto)
+    public async Task<IActionResult> Refresh()
     {
-        var AuthResponseDto = await _authService.Refresh(dto.RefreshToken);
+        var refreshToken = Request.Cookies["refresh_token"];
 
-        if (AuthResponseDto is null)
+        if (string.IsNullOrEmpty(refreshToken))
         {
-            return Unauthorized("Invalid refresh token");
+            return Unauthorized();
         }
 
-        return Ok(AuthResponseDto);
+        var response = await _authService.Refresh(refreshToken);
+
+        if (response is null)
+        {
+            return Unauthorized();
+        }
+
+        Response.Cookies.Append(
+            "access_token",
+            response.AccessToken,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddMinutes(15)
+            }
+        );
+
+        Response.Cookies.Append(
+            "refresh_token",
+            response.RefreshToken,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            }
+        );
+
+        return Ok();
     }
 
-    [HttpPost("revoke")]
-    public async Task<IActionResult> Revoke([FromBody] RefreshRequestDto dto)
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
     {
-        await _authService.Revoke(dto.RefreshToken);
+        var refreshToken = Request.Cookies["refresh_token"];
+
+        if (!string.IsNullOrEmpty(refreshToken))
+        {
+            await _authService.Revoke(refreshToken);
+        }
+
+        Response.Cookies.Delete("access_token");
+        Response.Cookies.Delete("refresh_token");
 
         return NoContent();
     }
