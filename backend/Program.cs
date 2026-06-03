@@ -68,6 +68,7 @@ builder.Services.AddControllers();
 
 //Scope add
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<Jwt>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
