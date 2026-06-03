@@ -1,10 +1,27 @@
-import { ArrowRight, Mail, ShieldCheck, UserRound } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Phone, ShieldCheck, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { RegisterRequest } from "@/entities/auth";
+import { registerUser } from "./api";
 
 function RegisterPage() {
-  function handleRegisterSubmit() {
-    console.log("check");
+  async function handleRegisterSubmit(e : React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (user.password !== user.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    await registerUser(user);
   }
+
+  const [user, setUser] = useState<RegisterRequest>({
+    firstName: "",
+    surname: "",
+    phoneNumber: "",
+    password: "",
+    confirmPassword: "",
+  });
 
   return (
     <main className="min-h-screen bg-background">
@@ -51,32 +68,55 @@ function RegisterPage() {
           <form className="space-y-4" onSubmit={handleRegisterSubmit}>
             <label className="block space-y-2">
               <span className="text-sm font-medium text-foreground">
-                Full name
+                First Name
               </span>
               <div className="flex h-10 items-center gap-2 rounded-lg border border-input bg-background px-3 focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
                 <UserRound className="size-4 text-muted-foreground" />
                 <input
                   className="h-full min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-                  name="name"
-                  placeholder="Your name"
+                  name="firstName"
+                  placeholder="Your first name"
                   type="text"
-                  autoComplete="name"
+                  autoComplete="firstName"
                   required
+                  value={user.firstName}
+                  onChange={(e) => setUser({ ...user, firstName: e.target.value })}
                 />
               </div>
             </label>
 
             <label className="block space-y-2">
-              <span className="text-sm font-medium text-foreground">Email</span>
+              <span className="text-sm font-medium text-foreground">
+                Surname
+              </span>
               <div className="flex h-10 items-center gap-2 rounded-lg border border-input bg-background px-3 focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
-                <Mail className="size-4 text-muted-foreground" />
+                <UserRound className="size-4 text-muted-foreground" />
                 <input
                   className="h-full min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-                  name="email"
-                  placeholder="you@example.com"
-                  type="email"
-                  autoComplete="email"
+                  name="surname"
+                  placeholder="Your surname"
+                  type="text"
+                  autoComplete="surname"
                   required
+                  value={user.surname}
+                  onChange={(e) => setUser({ ...user, surname: e.target.value })}
+                />
+              </div>
+            </label>
+
+            <label className="block space-y-2">
+              <span className="text-sm font-medium text-foreground">Phone Number</span>
+              <div className="flex h-10 items-center gap-2 rounded-lg border border-input bg-background px-3 focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
+                <Phone className="size-4 text-muted-foreground" />
+                <input
+                  className="h-full min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                  name="phone number"
+                  placeholder="Your phone number"
+                  type="tel"
+                  autoComplete="phone number"
+                  required
+                  value={user.phoneNumber}
+                  onChange={(e) => setUser({ ...user, phoneNumber: e.target.value })}
                 />
               </div>
             </label>
@@ -93,6 +133,8 @@ function RegisterPage() {
                 autoComplete="new-password"
                 minLength={8}
                 required
+                value={user.password}
+                onChange={(e) => setUser({ ...user, password: e.target.value })}
               />
             </label>
 
@@ -108,6 +150,8 @@ function RegisterPage() {
                 autoComplete="new-password"
                 minLength={8}
                 required
+                value={user.confirmPassword}
+                onChange={(e) => setUser({ ...user, confirmPassword: e.target.value })}
               />
             </label>
 
