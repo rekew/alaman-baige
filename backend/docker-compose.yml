@@ -1,0 +1,17 @@
+# docker-compose.yml
+services:
+  db:
+    image: postgres:16
+    container_name: alaman_baige_db
+    restart: always
+    environment:
+      POSTGRES_USER: alaman_baige_user
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: alaman_baige_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

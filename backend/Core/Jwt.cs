@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Backend.Models;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
 
 namespace Backend.Core;
 
@@ -46,5 +47,16 @@ public class Jwt
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public RefreshToken GenerateRefreshToken(int userId)
+    {
+        return new RefreshToken
+        {
+            UserId = userId,
+            Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+            ExpiresAt = DateTime.UtcNow.AddDays(30),
+            IsRevoked = false
+        };
     }
 }
