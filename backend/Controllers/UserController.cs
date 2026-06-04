@@ -5,7 +5,7 @@ using Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Backend.DTOs;
 using Backend.Attributes;
-using Backend.Enums;
+using Backend.Exceptions.UserRepositoryExceptions;
 
 [ApiController]
 [Route("api/users")]
@@ -50,15 +50,19 @@ public class UserController : ControllerBase
             return Unauthorized();
         }
 
-        var result = await _userService.UpdateUserAsync(userId, dto);
-
-        return result switch
+        try
         {
-            UpdateUserResult.Success => NoContent(),
-            UpdateUserResult.NotFound => NotFound(),
-            UpdateUserResult.PhoneNumberAlreadyUsed => Conflict("Phone number already used."),
-            _ => StatusCode(StatusCodes.Status500InternalServerError)
-        };
+            await _userService.UpdateUserAsync(userId, dto);
+            return NoContent();
+        }
+        catch (UserNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (PhoneAlreadyExistsException)
+        {
+            return Conflict("Phone number already used.");
+        }
     }
 
     [Authorize]
@@ -72,16 +76,23 @@ public class UserController : ControllerBase
             return Unauthorized();
         }
 
-        var result = await _userService.PatchUserAsync(userId, dto);
-
-        return result switch
+        try
         {
-            PatchUserResult.Success => NoContent(),
-            PatchUserResult.NotFound => NotFound(),
-            PatchUserResult.NoFieldsToUpdate => BadRequest("At least one field must be provided."),
-            PatchUserResult.PhoneNumberAlreadyUsed => Conflict("Phone number already used."),
-            _ => StatusCode(StatusCodes.Status500InternalServerError)
-        };
+            await _userService.PatchUserAsync(userId, dto);
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (UserNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (PhoneAlreadyExistsException)
+        {
+            return Conflict("Phone number already used.");
+        }
     }
 
     [Authorize]
@@ -95,13 +106,14 @@ public class UserController : ControllerBase
             return Unauthorized();
         }
 
-        var result = await _userService.DeleteUserAsync(userId);
-
-        return result switch
+        try
         {
-            DeleteUserResult.Success => NoContent(),
-            DeleteUserResult.NotFound => NotFound(),
-            _ => StatusCode(StatusCodes.Status500InternalServerError)
-        };
+            await _userService.DeleteUserAsync(userId);
+            return NoContent();
+        }
+        catch (UserNotFoundException)
+        {
+            return NotFound();
+        }
     }
 }

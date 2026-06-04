@@ -2,7 +2,6 @@ using Backend.DTOs;
 using Backend.Models;
 using Backend.Interfaces;
 using Backend.Core;
-using Backend.Enums;
 
 namespace Backend.Services;
 
@@ -29,12 +28,7 @@ public class AuthService
             Password = dto.Password
         };
 
-        var result = await _userRepository.AddAsync(user);
-
-        if (result == UserRepositoryResult.PhoneNumberAlreadyUsed)
-        {
-            return null;
-        }
+        await _userRepository.AddAsync(user);
 
         return await GenerateAuthResponse(user);
     }

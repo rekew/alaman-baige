@@ -1,7 +1,7 @@
 using Backend.Models;
 using Backend.Core;
 using Backend.Interfaces;
-using Backend.Enums;
+using Backend.Exceptions.UserRepositoryExceptions;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -16,18 +16,17 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
 
-    public async Task<UserRepositoryResult> AddAsync(User user)
+    public async Task AddAsync(User user)
     {
         await _dbContext.Users.AddAsync(user);
 
         try
         {
             await _dbContext.SaveChangesAsync();
-            return UserRepositoryResult.Success;
         }
         catch (DbUpdateException ex) when (IsPhoneNumberUniqueViolation(ex))
         {
-            return UserRepositoryResult.PhoneNumberAlreadyUsed;
+            throw new PhoneAlreadyExistsException();
         }
     }
 
@@ -43,7 +42,7 @@ public class UserRepository : IUserRepository
             .FirstOrDefaultAsync(user => user.Id == id);
     }
 
-    public async Task<UserRepositoryResult> UpdateAsync(User user)
+    public async Task UpdateAsync(User user)
     {
         if (user is null)
         {
@@ -55,7 +54,7 @@ public class UserRepository : IUserRepository
 
         if (existingUser is null)
         {
-            return UserRepositoryResult.NotFound;
+            throw new UserNotFoundException();
         }
 
         _dbContext.Entry(existingUser).CurrentValues.SetValues(user);
@@ -63,11 +62,10 @@ public class UserRepository : IUserRepository
         try
         {
             await _dbContext.SaveChangesAsync();
-            return UserRepositoryResult.Success;
         }
         catch (DbUpdateException ex) when (IsPhoneNumberUniqueViolation(ex))
         {
-            return UserRepositoryResult.PhoneNumberAlreadyUsed;
+            throw new PhoneAlreadyExistsException();
         }
     }
 

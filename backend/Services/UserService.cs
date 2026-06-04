@@ -2,7 +2,7 @@ using Backend.DTOs;
 using Backend.Models;
 using Backend.Interfaces;
 using Backend.Core;
-using Backend.Enums;
+using Backend.Exceptions.UserRepositoryExceptions;
 
 namespace Backend.Services;
 
@@ -38,46 +38,34 @@ public class UserService
         };
     }
 
-    public async Task<UpdateUserResult> UpdateUserAsync(int userId, UpdateUserDto dto)
+    public async Task UpdateUserAsync(int userId, UpdateUserDto dto)
     {
         var user = await _userRepository.GetByIdAsync(userId);
 
         if (user is null)
         {
-            return UpdateUserResult.NotFound;
+            throw new UserNotFoundException();
         }
 
         user.FirstName = dto.FirstName;
         user.Surname = dto.Surname;
         user.PhoneNumber = dto.PhoneNumber;
 
-        var result = await _userRepository.UpdateAsync(user);
-
-        if (result == UserRepositoryResult.NotFound)
-        {
-            return UpdateUserResult.NotFound;
-        }
-
-        if (result == UserRepositoryResult.PhoneNumberAlreadyUsed)
-        {
-            return UpdateUserResult.PhoneNumberAlreadyUsed;
-        }
-
-        return UpdateUserResult.Success;
+        await _userRepository.UpdateAsync(user);
     }
 
-    public async Task<PatchUserResult> PatchUserAsync(int userId, PatchUserDto dto)
+    public async Task PatchUserAsync(int userId, PatchUserDto dto)
     {
         if (dto.FirstName is null && dto.Surname is null && dto.PhoneNumber is null)
         {
-            return PatchUserResult.NoFieldsToUpdate;
+            throw new ArgumentException("At least one field must be provided.", nameof(dto));
         }
 
         var user = await _userRepository.GetByIdAsync(userId);
 
         if (user is null)
         {
-            return PatchUserResult.NotFound;
+            throw new UserNotFoundException();
         }
 
         if (dto.PhoneNumber is not null)
@@ -95,27 +83,16 @@ public class UserService
             user.Surname = dto.Surname;
         }
 
-        var result = await _userRepository.UpdateAsync(user);
-
-        if (result == UserRepositoryResult.NotFound)
-        {
-            return PatchUserResult.NotFound;
-        }
-
-        if (result == UserRepositoryResult.PhoneNumberAlreadyUsed)
-        {
-            return PatchUserResult.PhoneNumberAlreadyUsed;
-        }
-
-        return PatchUserResult.Success;
+        await _userRepository.UpdateAsync(user);
     }
 
-    public async Task<DeleteUserResult> DeleteUserAsync(int userId)
+    public async Task DeleteUserAsync(int userId)
     {
         var deleted = await _userRepository.RemoveByIdAsync(userId);
 
-        return deleted
-            ? DeleteUserResult.Success
-            : DeleteUserResult.NotFound;
+        if (!deleted)
+        {
+            throw new UserNotFoundException();
+        }
     }
 }
