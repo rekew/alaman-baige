@@ -1,14 +1,7 @@
 using Backend.Models;
+using Backend.Enums;
 
 namespace Backend.Interfaces;
-
-public enum UserRepositoryResult
-{
-    Success,
-    NotFound,
-    PhoneNumberAlreadyUsed
-}
-
 public interface IUserRepository
 {
     Task<UserRepositoryResult> AddAsync(User user);

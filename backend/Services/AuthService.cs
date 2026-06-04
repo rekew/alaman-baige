@@ -2,6 +2,7 @@ using Backend.DTOs;
 using Backend.Models;
 using Backend.Interfaces;
 using Backend.Core;
+using Backend.Enums;
 
 namespace Backend.Services;
 

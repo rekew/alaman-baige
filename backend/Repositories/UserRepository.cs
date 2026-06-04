@@ -1,6 +1,7 @@
 using Backend.Models;
 using Backend.Core;
 using Backend.Interfaces;
+using Backend.Enums;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 

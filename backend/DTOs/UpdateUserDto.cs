@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Backend.Attributes;
 
 namespace Backend.DTOs;
 public class UpdateUserDto
@@ -12,8 +13,7 @@ public class UpdateUserDto
     public string Surname { get; set; } = string.Empty;
 
     [Required]
-    [Phone]
-    [RegularExpression(@"^\+7\d{10}$", ErrorMessage = "Phone number must be in Kazakhstan format: +7XXXXXXXXXX.")]
+    [KazakhstanPhone]
     [StringLength(20, MinimumLength = 10)]
     public string PhoneNumber { get; set; } = string.Empty;
 

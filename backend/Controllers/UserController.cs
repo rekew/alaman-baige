@@ -4,6 +4,8 @@ using System.Security.Claims;
 using Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Backend.DTOs;
+using Backend.Attributes;
+using Backend.Enums;
 
 [ApiController]
 [Route("api/users")]

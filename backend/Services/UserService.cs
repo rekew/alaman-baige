@@ -2,29 +2,9 @@ using Backend.DTOs;
 using Backend.Models;
 using Backend.Interfaces;
 using Backend.Core;
+using Backend.Enums;
 
 namespace Backend.Services;
-
-public enum UpdateUserResult
-{
-    Success,
-    NotFound,
-    PhoneNumberAlreadyUsed
-}
-
-public enum PatchUserResult
-{
-    Success,
-    NotFound,
-    NoFieldsToUpdate,
-    PhoneNumberAlreadyUsed
-}
-
-public enum DeleteUserResult
-{
-    Success,
-    NotFound
-}
 
 public class UserService
 {
