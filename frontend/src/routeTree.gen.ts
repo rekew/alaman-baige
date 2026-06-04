@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './app/routes/__root'
 import { Route as ProfilesMeRouteImport } from './app/routes/profiles/me'
 import { Route as AuthRegisterRouteImport } from './app/routes/auth/register'
 import { Route as AuthLoginRouteImport } from './app/routes/auth/login'
+import { Route as AuthAdminRouteImport } from './app/routes/auth/admin'
 
 const ProfilesMeRoute = ProfilesMeRouteImport.update({
   id: '/profiles/me',
@@ -28,32 +29,41 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthAdminRoute = AuthAdminRouteImport.update({
+  id: '/auth/admin',
+  path: '/auth/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/profiles/me': typeof ProfilesMeRoute
 }
 export interface FileRoutesByTo {
+  '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/profiles/me': typeof ProfilesMeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/profiles/me': typeof ProfilesMeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/auth/login' | '/auth/register' | '/profiles/me'
+  fullPaths: '/auth/admin' | '/auth/login' | '/auth/register' | '/profiles/me'
   fileRoutesByTo: FileRoutesByTo
-  to: '/auth/login' | '/auth/register' | '/profiles/me'
-  id: '__root__' | '/auth/login' | '/auth/register' | '/profiles/me'
+  to: '/auth/admin' | '/auth/login' | '/auth/register' | '/profiles/me'
+  id: '__root__' | '/auth/admin' | '/auth/login' | '/auth/register' | '/profiles/me'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AuthAdminRoute: typeof AuthAdminRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
   ProfilesMeRoute: typeof ProfilesMeRoute
@@ -82,10 +92,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/admin': {
+      id: '/auth/admin'
+      path: '/auth/admin'
+      fullPath: '/auth/admin'
+      preLoaderRoute: typeof AuthAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  AuthAdminRoute: AuthAdminRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
   ProfilesMeRoute: ProfilesMeRoute,

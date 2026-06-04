@@ -85,6 +85,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<Jwt>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 //APP
 var app = builder.Build();

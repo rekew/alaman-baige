@@ -61,6 +61,41 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
+    [HttpPost("login/admin")]
+    public async Task<IActionResult> LoginAdmin(LoginDto dto)
+    {
+        var response = await _authService.LoginAdmin(dto);
+
+        if (response is null)
+        {
+            return Unauthorized("Invalid credentials");
+        }
+
+        Response.Cookies.Append(
+            "access_token",
+            response.AccessToken,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddMinutes(15)
+            });
+
+        Response.Cookies.Append(
+            "refresh_token",
+            response.RefreshToken,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
+        return Ok();
+    }
+
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh()
     {
