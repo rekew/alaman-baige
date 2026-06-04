@@ -20,9 +20,6 @@ public class AuthService
 
     public async Task<AuthResponseDto?> Register(RegisterDto dto)
     {
-        var existingUser = await _userRepository.GetByPhoneNumber(dto.PhoneNumber);
-        if (existingUser is not null) return null;
-
         var user = new User
         {
             FirstName = dto.FirstName,
@@ -31,14 +28,14 @@ public class AuthService
             Password = dto.Password
         };
 
-        await _userRepository.Add(user);
+        await _userRepository.AddAsync(user);
 
         return await GenerateAuthResponse(user);
     }
 
     public async Task<AuthResponseDto?> Login(LoginDto dto)
     {
-        var user = await _userRepository.GetByPhoneNumber(dto.PhoneNumber);
+        var user = await _userRepository.GetByPhoneNumberAsync(dto.PhoneNumber);
         if (user is null || user.Password != dto.Password) return null;
 
         return await GenerateAuthResponse(user);
@@ -56,7 +53,7 @@ public class AuthService
         stored.IsRevoked = true;
         await _refreshTokenRepository.Update(stored);
 
-        var user = await _userRepository.GetById(stored.UserId);
+        var user = await _userRepository.GetByIdAsync(stored.UserId);
 
         if (user is null)
             return null;

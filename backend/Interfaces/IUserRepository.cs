@@ -1,11 +1,12 @@
 using Backend.Models;
 
 namespace Backend.Interfaces;
-
 public interface IUserRepository
 {
-    Task Add(User user);
-
-    Task <User?> GetByPhoneNumber(string phoneNumber);
-    Task<User?> GetById(int id);
+    Task AddAsync(User user);
+    Task<User?> GetByPhoneNumberAsync(string phoneNumber);
+    Task<User?> GetByIdAsync(int id);
+    Task UpdateAsync(User user);
+    Task RemoveAsync(User user);
+    Task<bool> RemoveByIdAsync(int id);
 }

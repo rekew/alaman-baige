@@ -20,6 +20,7 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<User>()
             .HasIndex(user => user.PhoneNumber)
-            .IsUnique();
+            .IsUnique()
+            .HasDatabaseName("ix_users_phone_number_unique");
     }
 }
