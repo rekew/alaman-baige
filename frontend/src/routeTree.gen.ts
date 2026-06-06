@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './app/routes/__root'
+import { Route as ProfilesMeRouteImport } from './app/routes/profiles/me'
 import { Route as AuthRegisterRouteImport } from './app/routes/auth/register'
 import { Route as AuthLoginRouteImport } from './app/routes/auth/login'
 
+const ProfilesMeRoute = ProfilesMeRouteImport.update({
+  id: '/profiles/me',
+  path: '/profiles/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/auth/register',
   path: '/auth/register',
@@ -26,31 +32,42 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
 export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/profiles/me': typeof ProfilesMeRoute
 }
 export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/profiles/me': typeof ProfilesMeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/profiles/me': typeof ProfilesMeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/auth/login' | '/auth/register'
+  fullPaths: '/auth/login' | '/auth/register' | '/profiles/me'
   fileRoutesByTo: FileRoutesByTo
-  to: '/auth/login' | '/auth/register'
-  id: '__root__' | '/auth/login' | '/auth/register'
+  to: '/auth/login' | '/auth/register' | '/profiles/me'
+  id: '__root__' | '/auth/login' | '/auth/register' | '/profiles/me'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
+  ProfilesMeRoute: typeof ProfilesMeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/profiles/me': {
+      id: '/profiles/me'
+      path: '/profiles/me'
+      fullPath: '/profiles/me'
+      preLoaderRoute: typeof ProfilesMeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/register': {
       id: '/auth/register'
       path: '/auth/register'
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
+  ProfilesMeRoute: ProfilesMeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
