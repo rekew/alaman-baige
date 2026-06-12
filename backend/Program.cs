@@ -76,6 +76,14 @@ builder.Services
         };
     });
 
+//Cookies
+builder.Services.AddSingleton(new CookieOptions
+{
+    HttpOnly = true,
+    Secure = !builder.Environment.IsDevelopment(),
+    SameSite = SameSiteMode.Strict
+});
+
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 

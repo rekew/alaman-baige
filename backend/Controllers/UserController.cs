@@ -18,7 +18,7 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    [Authorize]
+    [Authorize(Roles = "admin,user")]
     [HttpGet("me")]
     public async Task<IActionResult> GetMe()
     {
