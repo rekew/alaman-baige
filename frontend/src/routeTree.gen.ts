@@ -9,13 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './app/routes/__root'
+import { Route as ProtectedRouteImport } from './app/routes/_protected'
 import { Route as ProfilesMeRouteImport } from './app/routes/profiles/me'
 import { Route as AuthRegisterRouteImport } from './app/routes/auth/register'
 import { Route as AuthLoginRouteImport } from './app/routes/auth/login'
 import { Route as AuthAdminRouteImport } from './app/routes/auth/admin'
-import { Route as AdminTablesRouteImport } from './app/routes/admin/tables'
-import { Route as AdminHomeRouteImport } from './app/routes/admin/home'
+import { Route as ProtectedAdminTablesRouteImport } from './app/routes/_protected/admin/tables'
+import { Route as ProtectedAdminHomeRouteImport } from './app/routes/_protected/admin/home'
 
+const ProtectedRoute = ProtectedRouteImport.update({
+  id: '/_protected',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfilesMeRoute = ProfilesMeRouteImport.update({
   id: '/profiles/me',
   path: '/profiles/me',
@@ -36,72 +41,77 @@ const AuthAdminRoute = AuthAdminRouteImport.update({
   path: '/auth/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminTablesRoute = AdminTablesRouteImport.update({
+const ProtectedAdminTablesRoute = ProtectedAdminTablesRouteImport.update({
   id: '/admin/tables',
   path: '/admin/tables',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => ProtectedRoute,
 } as any)
-const AdminHomeRoute = AdminHomeRouteImport.update({
+const ProtectedAdminHomeRoute = ProtectedAdminHomeRouteImport.update({
   id: '/admin/home',
   path: '/admin/home',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => ProtectedRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/admin/home': typeof AdminHomeRoute
-  '/admin/tables': typeof AdminTablesRoute
+  '/': typeof ProtectedRouteWithChildren
   '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/profiles/me': typeof ProfilesMeRoute
+  '/admin/home': typeof ProtectedAdminHomeRoute
+  '/admin/tables': typeof ProtectedAdminTablesRoute
 }
 export interface FileRoutesByTo {
-  '/admin/home': typeof AdminHomeRoute
-  '/admin/tables': typeof AdminTablesRoute
+  '/': typeof ProtectedRouteWithChildren
   '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/profiles/me': typeof ProfilesMeRoute
+  '/admin/home': typeof ProtectedAdminHomeRoute
+  '/admin/tables': typeof ProtectedAdminTablesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/admin/home': typeof AdminHomeRoute
-  '/admin/tables': typeof AdminTablesRoute
+  '/_protected': typeof ProtectedRouteWithChildren
   '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/profiles/me': typeof ProfilesMeRoute
+  '/_protected/admin/home': typeof ProtectedAdminHomeRoute
+  '/_protected/admin/tables': typeof ProtectedAdminTablesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/admin/home'
-    | '/admin/tables'
+    | '/'
     | '/auth/admin'
     | '/auth/login'
     | '/auth/register'
     | '/profiles/me'
+    | '/admin/home'
+    | '/admin/tables'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/admin/home'
-    | '/admin/tables'
+    | '/'
     | '/auth/admin'
     | '/auth/login'
     | '/auth/register'
     | '/profiles/me'
+    | '/admin/home'
+    | '/admin/tables'
   id:
     | '__root__'
-    | '/admin/home'
-    | '/admin/tables'
+    | '/_protected'
     | '/auth/admin'
     | '/auth/login'
     | '/auth/register'
     | '/profiles/me'
+    | '/_protected/admin/home'
+    | '/_protected/admin/tables'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AdminHomeRoute: typeof AdminHomeRoute
-  AdminTablesRoute: typeof AdminTablesRoute
+  ProtectedRoute: typeof ProtectedRouteWithChildren
   AuthAdminRoute: typeof AuthAdminRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
@@ -110,6 +120,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_protected': {
+      id: '/_protected'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ProtectedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profiles/me': {
       id: '/profiles/me'
       path: '/profiles/me'
@@ -138,26 +155,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/tables': {
-      id: '/admin/tables'
+    '/_protected/admin/tables': {
+      id: '/_protected/admin/tables'
       path: '/admin/tables'
       fullPath: '/admin/tables'
-      preLoaderRoute: typeof AdminTablesRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof ProtectedAdminTablesRouteImport
+      parentRoute: typeof ProtectedRoute
     }
-    '/admin/home': {
-      id: '/admin/home'
+    '/_protected/admin/home': {
+      id: '/_protected/admin/home'
       path: '/admin/home'
       fullPath: '/admin/home'
-      preLoaderRoute: typeof AdminHomeRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof ProtectedAdminHomeRouteImport
+      parentRoute: typeof ProtectedRoute
     }
   }
 }
 
+interface ProtectedRouteChildren {
+  ProtectedAdminHomeRoute: typeof ProtectedAdminHomeRoute
+  ProtectedAdminTablesRoute: typeof ProtectedAdminTablesRoute
+}
+
+const ProtectedRouteChildren: ProtectedRouteChildren = {
+  ProtectedAdminHomeRoute: ProtectedAdminHomeRoute,
+  ProtectedAdminTablesRoute: ProtectedAdminTablesRoute,
+}
+
+const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
+  ProtectedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  AdminHomeRoute: AdminHomeRoute,
-  AdminTablesRoute: AdminTablesRoute,
+  ProtectedRoute: ProtectedRouteWithChildren,
   AuthAdminRoute: AuthAdminRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,

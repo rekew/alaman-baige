@@ -34,7 +34,8 @@ public class UserService
             Id = user.Id,
             FirstName = user.FirstName,
             Surname = user.Surname,
-            PhoneNumber = user.PhoneNumber
+            PhoneNumber = user.PhoneNumber,
+            Role = user.Role
         };
     }
 

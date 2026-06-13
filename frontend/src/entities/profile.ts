@@ -3,6 +3,7 @@ export interface UserProfile {
   firstName: string;
   surname: string;
   phoneNumber: string;
+  role: string;
 }
 
 export interface ReplaceUserProfileRequest {
