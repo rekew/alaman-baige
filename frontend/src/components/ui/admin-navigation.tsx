@@ -13,7 +13,7 @@ export default function AdminNavigationPanel() {
           Home
         </Link>
 
-        <Link to="/tables" className={linkClass}>
+        <Link to="/admin/tables" className={linkClass}>
           <Table2 className="h-4 w-4" />
           Tables
         </Link>

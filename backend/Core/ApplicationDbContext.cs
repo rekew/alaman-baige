@@ -14,6 +14,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Employee> Employees { get; set; }
+    public DbSet<Horse> Horses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -23,5 +24,19 @@ public class ApplicationDbContext : DbContext
             .HasIndex(user => user.PhoneNumber)
             .IsUnique()
             .HasDatabaseName("ix_users_phone_number_unique");
+
+        modelBuilder.Entity<Horse>(entity =>
+        {
+            entity.Property(horse => horse.InsertedAt)
+                .HasDefaultValueSql("NOW()");
+
+            entity.Property(horse => horse.UpdatedAt)
+                .HasDefaultValueSql("NOW()");
+
+            entity.HasOne<User>()
+                .WithMany()
+                .HasForeignKey(user => user.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
     }
 }

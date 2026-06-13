@@ -13,6 +13,7 @@ import { Route as ProfilesMeRouteImport } from './app/routes/profiles/me'
 import { Route as AuthRegisterRouteImport } from './app/routes/auth/register'
 import { Route as AuthLoginRouteImport } from './app/routes/auth/login'
 import { Route as AuthAdminRouteImport } from './app/routes/auth/admin'
+import { Route as AdminTablesRouteImport } from './app/routes/admin/tables'
 import { Route as AdminHomeRouteImport } from './app/routes/admin/home'
 
 const ProfilesMeRoute = ProfilesMeRouteImport.update({
@@ -35,6 +36,11 @@ const AuthAdminRoute = AuthAdminRouteImport.update({
   path: '/auth/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminTablesRoute = AdminTablesRouteImport.update({
+  id: '/admin/tables',
+  path: '/admin/tables',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminHomeRoute = AdminHomeRouteImport.update({
   id: '/admin/home',
   path: '/admin/home',
@@ -43,6 +49,7 @@ const AdminHomeRoute = AdminHomeRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/admin/home': typeof AdminHomeRoute
+  '/admin/tables': typeof AdminTablesRoute
   '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/admin/home': typeof AdminHomeRoute
+  '/admin/tables': typeof AdminTablesRoute
   '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/admin/home': typeof AdminHomeRoute
+  '/admin/tables': typeof AdminTablesRoute
   '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
@@ -67,6 +76,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/admin/home'
+    | '/admin/tables'
     | '/auth/admin'
     | '/auth/login'
     | '/auth/register'
@@ -74,6 +84,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/admin/home'
+    | '/admin/tables'
     | '/auth/admin'
     | '/auth/login'
     | '/auth/register'
@@ -81,6 +92,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/admin/home'
+    | '/admin/tables'
     | '/auth/admin'
     | '/auth/login'
     | '/auth/register'
@@ -89,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AdminHomeRoute: typeof AdminHomeRoute
+  AdminTablesRoute: typeof AdminTablesRoute
   AuthAdminRoute: typeof AuthAdminRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
@@ -125,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/tables': {
+      id: '/admin/tables'
+      path: '/admin/tables'
+      fullPath: '/admin/tables'
+      preLoaderRoute: typeof AdminTablesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/home': {
       id: '/admin/home'
       path: '/admin/home'
@@ -137,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   AdminHomeRoute: AdminHomeRoute,
+  AdminTablesRoute: AdminTablesRoute,
   AuthAdminRoute: AuthAdminRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
