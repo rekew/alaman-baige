@@ -9,11 +9,18 @@ public class AuthService
 {
     private readonly IUserRepository _userRepository;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
+    private readonly IEmployeeRepository _employeeRepository;
     private readonly Jwt _jwt;
 
-    public AuthService(IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository, Jwt jwt)
+    public AuthService(
+        IUserRepository userRepository, 
+        IRefreshTokenRepository refreshTokenRepository, 
+        IEmployeeRepository employeeRepository, 
+        Jwt jwt
+    )
     {
         _userRepository = userRepository;
+        _employeeRepository = employeeRepository;
         _refreshTokenRepository = refreshTokenRepository;
         _jwt = jwt;
     }
@@ -37,6 +44,17 @@ public class AuthService
     {
         var user = await _userRepository.GetByPhoneNumberAsync(dto.PhoneNumber);
         if (user is null || user.Password != dto.Password) return null;
+
+        return await GenerateAuthResponse(user);
+    }
+
+    public async Task<AuthResponseDto?> LoginAdmin(LoginDto dto)
+    {
+        var user = await _userRepository.GetByPhoneNumberAsync(dto.PhoneNumber);
+        if (user is null || user.Password != dto.Password) return null;
+
+        var employee = await _employeeRepository.GetByUserIdAsync(user.Id);
+        if (employee is null) return null;
 
         return await GenerateAuthResponse(user);
     }
@@ -74,9 +92,7 @@ public class AuthService
     {
         var accessToken = _jwt.GenerateToken(user);
         var refreshToken = _jwt.GenerateRefreshToken(user.Id);
-
         await _refreshTokenRepository.Add(refreshToken);
-
         return new AuthResponseDto
         {
             AccessToken = accessToken,

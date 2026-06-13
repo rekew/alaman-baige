@@ -1,10 +1,8 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Backend.DTOs;
-using Backend.Attributes;
 using Backend.Exceptions.UserRepositoryExceptions;
 
 [ApiController]
@@ -18,7 +16,7 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    [Authorize]
+    [Authorize(Roles = "admin,user")]
     [HttpGet("me")]
     public async Task<IActionResult> GetMe()
     {

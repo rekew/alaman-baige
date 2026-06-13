@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './app/routes/__root'
 import { Route as ProfilesMeRouteImport } from './app/routes/profiles/me'
 import { Route as AuthRegisterRouteImport } from './app/routes/auth/register'
 import { Route as AuthLoginRouteImport } from './app/routes/auth/login'
+import { Route as AuthAdminRouteImport } from './app/routes/auth/admin'
+import { Route as AdminTablesRouteImport } from './app/routes/admin/tables'
+import { Route as AdminHomeRouteImport } from './app/routes/admin/home'
 
 const ProfilesMeRoute = ProfilesMeRouteImport.update({
   id: '/profiles/me',
@@ -28,32 +31,78 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthAdminRoute = AuthAdminRouteImport.update({
+  id: '/auth/admin',
+  path: '/auth/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminTablesRoute = AdminTablesRouteImport.update({
+  id: '/admin/tables',
+  path: '/admin/tables',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminHomeRoute = AdminHomeRouteImport.update({
+  id: '/admin/home',
+  path: '/admin/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/admin/home': typeof AdminHomeRoute
+  '/admin/tables': typeof AdminTablesRoute
+  '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/profiles/me': typeof ProfilesMeRoute
 }
 export interface FileRoutesByTo {
+  '/admin/home': typeof AdminHomeRoute
+  '/admin/tables': typeof AdminTablesRoute
+  '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/profiles/me': typeof ProfilesMeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/admin/home': typeof AdminHomeRoute
+  '/admin/tables': typeof AdminTablesRoute
+  '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/profiles/me': typeof ProfilesMeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/auth/login' | '/auth/register' | '/profiles/me'
+  fullPaths:
+    | '/admin/home'
+    | '/admin/tables'
+    | '/auth/admin'
+    | '/auth/login'
+    | '/auth/register'
+    | '/profiles/me'
   fileRoutesByTo: FileRoutesByTo
-  to: '/auth/login' | '/auth/register' | '/profiles/me'
-  id: '__root__' | '/auth/login' | '/auth/register' | '/profiles/me'
+  to:
+    | '/admin/home'
+    | '/admin/tables'
+    | '/auth/admin'
+    | '/auth/login'
+    | '/auth/register'
+    | '/profiles/me'
+  id:
+    | '__root__'
+    | '/admin/home'
+    | '/admin/tables'
+    | '/auth/admin'
+    | '/auth/login'
+    | '/auth/register'
+    | '/profiles/me'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AdminHomeRoute: typeof AdminHomeRoute
+  AdminTablesRoute: typeof AdminTablesRoute
+  AuthAdminRoute: typeof AuthAdminRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
   ProfilesMeRoute: typeof ProfilesMeRoute
@@ -82,10 +131,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/admin': {
+      id: '/auth/admin'
+      path: '/auth/admin'
+      fullPath: '/auth/admin'
+      preLoaderRoute: typeof AuthAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/tables': {
+      id: '/admin/tables'
+      path: '/admin/tables'
+      fullPath: '/admin/tables'
+      preLoaderRoute: typeof AdminTablesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/home': {
+      id: '/admin/home'
+      path: '/admin/home'
+      fullPath: '/admin/home'
+      preLoaderRoute: typeof AdminHomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  AdminHomeRoute: AdminHomeRoute,
+  AdminTablesRoute: AdminTablesRoute,
+  AuthAdminRoute: AuthAdminRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
   ProfilesMeRoute: ProfilesMeRoute,

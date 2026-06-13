@@ -1,6 +1,6 @@
 namespace Backend.Models;
 
-public class RefreshToken
+public class RefreshToken : BaseEntity
 {
     public int Id { get; set; }
     public required string Token { get; set; }        

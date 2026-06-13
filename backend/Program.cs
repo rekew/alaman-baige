@@ -6,6 +6,7 @@ using Backend.Repositories;
 using Backend.Services;
 using Backend.Interfaces;
 using System.Text;
+using Backend.Services.Tables;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,15 +77,37 @@ builder.Services
         };
     });
 
+//Cookies
+builder.Services.AddSingleton(new CookieOptions
+{
+    HttpOnly = true,
+    Secure = !builder.Environment.IsDevelopment(),
+    SameSite = SameSiteMode.Strict
+});
+
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
 //Scope add
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<HorseService>();
 builder.Services.AddScoped<Jwt>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IHorseRepository, HorseRepository>();
+
+//Routing Path
+builder.Services.AddRouting(options =>
+{
+    options.LowercaseUrls = true;
+});
+
+//Policy
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("AdminOnly", policy =>
+        policy.RequireRole("admin"));
 
 //APP
 var app = builder.Build();

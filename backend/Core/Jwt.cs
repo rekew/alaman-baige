@@ -4,6 +4,7 @@ using System.Text;
 using Backend.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
+using Backend.Interfaces;
 
 namespace Backend.Core;
 
@@ -26,9 +27,14 @@ public class Jwt
                 user.Id.ToString()
             ),
 
-            new Claim(
+            new(
                 ClaimTypes.MobilePhone,
                 user.PhoneNumber
+            ),
+
+            new(
+                ClaimTypes.Role,
+                user.Role
             )
         };
 

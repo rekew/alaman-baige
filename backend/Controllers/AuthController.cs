@@ -7,10 +7,12 @@ using Backend.Services;
 public class AuthController : ControllerBase
 {
     private readonly AuthService _authService;
+    private readonly CookieOptions _cookieOptions;
 
-    public AuthController(AuthService authService)
+    public AuthController(AuthService authService, CookieOptions cookieOptions)
     {
         _authService = authService;
+        _cookieOptions = cookieOptions;
     }
 
     [HttpPost("register")]
@@ -57,6 +59,47 @@ public class AuthController : ControllerBase
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTimeOffset.UtcNow.AddDays(7)
             });
+
+        return Ok();
+    }
+
+    [HttpPost("login/admin")]
+    public async Task<IActionResult> LoginAdmin(LoginDto dto)
+    {
+        var response = await _authService.LoginAdmin(dto);
+
+        if (response is null)
+        {
+            return Unauthorized("Invalid credentials");
+        }
+
+        var accessCookieOptions = new CookieOptions
+        {
+            HttpOnly = _cookieOptions.HttpOnly,
+            Secure = _cookieOptions.Secure,
+            SameSite = _cookieOptions.SameSite,
+            Expires = DateTimeOffset.UtcNow.AddMinutes(15)
+        };
+
+        var refreshCookieOptions = new CookieOptions
+        {
+            HttpOnly = _cookieOptions.HttpOnly,
+            Secure = _cookieOptions.Secure,
+            SameSite = _cookieOptions.SameSite,
+            Expires = DateTimeOffset.UtcNow.AddDays(7)
+        };
+
+        Response.Cookies.Append(
+            "access_token",
+            response.AccessToken,
+            accessCookieOptions
+        );
+
+        Response.Cookies.Append(
+            "refresh_token",
+            response.RefreshToken,
+            refreshCookieOptions
+        );
 
         return Ok();
     }

@@ -3,6 +3,7 @@ using System;
 using Backend.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260612192125_CreateHorse")]
+    partial class CreateHorse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,14 +33,6 @@ namespace backend.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("InsertedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("inserted_at");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer")
@@ -74,22 +69,10 @@ namespace backend.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("gender");
 
-                    b.Property<DateTime>("InsertedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("inserted_at")
-                        .HasDefaultValueSql("NOW()");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("NOW()");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer")
@@ -97,9 +80,6 @@ namespace backend.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_horses");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_horses_user_id");
 
                     b.ToTable("horses", (string)null);
                 });
@@ -117,10 +97,6 @@ namespace backend.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("expires_at");
 
-                    b.Property<DateTime>("InsertedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("inserted_at");
-
                     b.Property<bool>("IsRevoked")
                         .HasColumnType("boolean")
                         .HasColumnName("is_revoked");
@@ -129,10 +105,6 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("token");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer")
@@ -158,10 +130,6 @@ namespace backend.Migrations
                         .HasColumnType("text")
                         .HasColumnName("first_name");
 
-                    b.Property<DateTime>("InsertedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("inserted_at");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text")
@@ -181,10 +149,6 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("surname");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.HasKey("Id")
                         .HasName("pk_users");
@@ -206,16 +170,6 @@ namespace backend.Migrations
                         .HasConstraintName("fk_employees_users_user_id");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Backend.Models.Horse", b =>
-                {
-                    b.HasOne("Backend.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_horses_users_user_id");
                 });
 #pragma warning restore 612, 618
         }

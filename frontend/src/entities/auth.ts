@@ -1,3 +1,5 @@
+import { type UserProfile } from "./profile";
+
 export interface RegisterRequest {
     firstName: string;
     surname: string;
@@ -9,4 +11,8 @@ export interface RegisterRequest {
 export interface LoginRequest {
     phoneNumber: string;
     password: string;
+}
+
+export interface AuthUser extends UserProfile {
+  role: "admin" | "user";
 }
