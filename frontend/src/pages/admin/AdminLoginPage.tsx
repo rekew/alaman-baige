@@ -3,23 +3,35 @@ import { ArrowRight, Lock, Phone, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { LoginRequest } from "@/entities/auth";
 import { loginAdmin } from "./api";
+import { toast } from "sonner";
+import { useNavigate } from "@tanstack/react-router";
+import { useStore } from "@/store/user-store/store";
 
 function AdminLoginPage() {
   const [credentials, setCredentials] = useState<LoginRequest>({
     phoneNumber: "",
     password: "",
   });
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const fetchUser = useStore((state) => state.fetchUser);
 
   async function handleLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError(null);
     setLoading(true);
     try {
       await loginAdmin(credentials);
-    } catch (err) {
-      setError("Invalid credentials. Please try again.");
+
+      await fetchUser();
+
+      await navigate({
+        to: "/admin/home",
+      });
+      
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      toast.error(`Failed to login: ${message}`);
     } finally {
       setLoading(false);
     }
@@ -113,12 +125,6 @@ function AdminLoginPage() {
                 />
               </div>
             </label>
-
-            {error && (
-              <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                {error}
-              </p>
-            )}
 
             <Button
               className="mt-2 w-full"

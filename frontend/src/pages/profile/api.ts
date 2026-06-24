@@ -2,11 +2,11 @@ import { api } from "@/app/api";
 import type {
   ReplaceUserProfileRequest,
   UpdateUserProfileRequest,
-  UserProfile,
 } from "@/entities/profile";
+import type { AuthUser } from "@/entities/auth";
 
 export const getCurrentUser = async () => {
-  const response = await api.get<UserProfile>("/users/me");
+  const response = await api.get<AuthUser>("/users/me");
 
   return response.data;
 };

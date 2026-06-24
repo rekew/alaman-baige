@@ -3,16 +3,30 @@ import { ArrowRight, Phone, ShieldCheck, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { RegisterRequest } from "@/entities/auth";
 import { registerUser } from "./api";
+import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 function RegisterPage() {
-  async function handleRegisterSubmit(e : React.FormEvent<HTMLFormElement>) {
+
+  const navigate = useNavigate();
+
+  async function handleRegisterSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (user.password !== user.confirmPassword) {
       alert("Passwords do not match");
       return;
     }
 
-    await registerUser(user);
+    try {
+      await registerUser(user);
+
+      navigate({
+        to: "/auth/login",
+      });
+    }
+    catch (error: any) {
+      toast.error(error);
+    }
   }
 
   const [user, setUser] = useState<RegisterRequest>({
