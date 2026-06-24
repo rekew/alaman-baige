@@ -9,18 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './app/routes/__root'
-import { Route as ProfilesMeRouteImport } from './app/routes/profiles/me'
 import { Route as AuthRegisterRouteImport } from './app/routes/auth/register'
 import { Route as AuthLoginRouteImport } from './app/routes/auth/login'
 import { Route as AuthAdminRouteImport } from './app/routes/auth/admin'
-import { Route as AdminTablesRouteImport } from './app/routes/admin/tables'
-import { Route as AdminHomeRouteImport } from './app/routes/admin/home'
+import { Route as ProtectedProfilesRouteRouteImport } from './app/routes/_protected/profiles/route'
+import { Route as ProtectedProfileRouteRouteImport } from './app/routes/_protected/profile/route'
+import { Route as ProtectedAdminRouteRouteImport } from './app/routes/_protected/admin/route'
+import { Route as ProtectedProfilesMeRouteImport } from './app/routes/_protected/profiles/me'
+import { Route as ProtectedProfileMeRouteImport } from './app/routes/_protected/profile/me'
+import { Route as ProtectedAdminTablesRouteImport } from './app/routes/_protected/admin/tables'
+import { Route as ProtectedAdminHomeRouteImport } from './app/routes/_protected/admin/home'
 
-const ProfilesMeRoute = ProfilesMeRouteImport.update({
-  id: '/profiles/me',
-  path: '/profiles/me',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/auth/register',
   path: '/auth/register',
@@ -36,87 +35,129 @@ const AuthAdminRoute = AuthAdminRouteImport.update({
   path: '/auth/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminTablesRoute = AdminTablesRouteImport.update({
-  id: '/admin/tables',
-  path: '/admin/tables',
+const ProtectedProfilesRouteRoute = ProtectedProfilesRouteRouteImport.update({
+  id: '/_protected/profiles',
+  path: '/profiles',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminHomeRoute = AdminHomeRouteImport.update({
-  id: '/admin/home',
-  path: '/admin/home',
+const ProtectedProfileRouteRoute = ProtectedProfileRouteRouteImport.update({
+  id: '/_protected/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ProtectedAdminRouteRoute = ProtectedAdminRouteRouteImport.update({
+  id: '/_protected/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProtectedProfilesMeRoute = ProtectedProfilesMeRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => ProtectedProfilesRouteRoute,
+} as any)
+const ProtectedProfileMeRoute = ProtectedProfileMeRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => ProtectedProfileRouteRoute,
+} as any)
+const ProtectedAdminTablesRoute = ProtectedAdminTablesRouteImport.update({
+  id: '/tables',
+  path: '/tables',
+  getParentRoute: () => ProtectedAdminRouteRoute,
+} as any)
+const ProtectedAdminHomeRoute = ProtectedAdminHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => ProtectedAdminRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/admin/home': typeof AdminHomeRoute
-  '/admin/tables': typeof AdminTablesRoute
+  '/admin': typeof ProtectedAdminRouteRouteWithChildren
+  '/profile': typeof ProtectedProfileRouteRouteWithChildren
+  '/profiles': typeof ProtectedProfilesRouteRouteWithChildren
   '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/profiles/me': typeof ProfilesMeRoute
+  '/admin/home': typeof ProtectedAdminHomeRoute
+  '/admin/tables': typeof ProtectedAdminTablesRoute
+  '/profile/me': typeof ProtectedProfileMeRoute
+  '/profiles/me': typeof ProtectedProfilesMeRoute
 }
 export interface FileRoutesByTo {
-  '/admin/home': typeof AdminHomeRoute
-  '/admin/tables': typeof AdminTablesRoute
+  '/admin': typeof ProtectedAdminRouteRouteWithChildren
+  '/profile': typeof ProtectedProfileRouteRouteWithChildren
+  '/profiles': typeof ProtectedProfilesRouteRouteWithChildren
   '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/profiles/me': typeof ProfilesMeRoute
+  '/admin/home': typeof ProtectedAdminHomeRoute
+  '/admin/tables': typeof ProtectedAdminTablesRoute
+  '/profile/me': typeof ProtectedProfileMeRoute
+  '/profiles/me': typeof ProtectedProfilesMeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/admin/home': typeof AdminHomeRoute
-  '/admin/tables': typeof AdminTablesRoute
+  '/_protected/admin': typeof ProtectedAdminRouteRouteWithChildren
+  '/_protected/profile': typeof ProtectedProfileRouteRouteWithChildren
+  '/_protected/profiles': typeof ProtectedProfilesRouteRouteWithChildren
   '/auth/admin': typeof AuthAdminRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/profiles/me': typeof ProfilesMeRoute
+  '/_protected/admin/home': typeof ProtectedAdminHomeRoute
+  '/_protected/admin/tables': typeof ProtectedAdminTablesRoute
+  '/_protected/profile/me': typeof ProtectedProfileMeRoute
+  '/_protected/profiles/me': typeof ProtectedProfilesMeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/admin/home'
-    | '/admin/tables'
+    | '/admin'
+    | '/profile'
+    | '/profiles'
     | '/auth/admin'
     | '/auth/login'
     | '/auth/register'
+    | '/admin/home'
+    | '/admin/tables'
+    | '/profile/me'
     | '/profiles/me'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/admin/home'
-    | '/admin/tables'
+    | '/admin'
+    | '/profile'
+    | '/profiles'
     | '/auth/admin'
     | '/auth/login'
     | '/auth/register'
+    | '/admin/home'
+    | '/admin/tables'
+    | '/profile/me'
     | '/profiles/me'
   id:
     | '__root__'
-    | '/admin/home'
-    | '/admin/tables'
+    | '/_protected/admin'
+    | '/_protected/profile'
+    | '/_protected/profiles'
     | '/auth/admin'
     | '/auth/login'
     | '/auth/register'
-    | '/profiles/me'
+    | '/_protected/admin/home'
+    | '/_protected/admin/tables'
+    | '/_protected/profile/me'
+    | '/_protected/profiles/me'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AdminHomeRoute: typeof AdminHomeRoute
-  AdminTablesRoute: typeof AdminTablesRoute
+  ProtectedAdminRouteRoute: typeof ProtectedAdminRouteRouteWithChildren
+  ProtectedProfileRouteRoute: typeof ProtectedProfileRouteRouteWithChildren
+  ProtectedProfilesRouteRoute: typeof ProtectedProfilesRouteRouteWithChildren
   AuthAdminRoute: typeof AuthAdminRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
-  ProfilesMeRoute: typeof ProfilesMeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/profiles/me': {
-      id: '/profiles/me'
-      path: '/profiles/me'
-      fullPath: '/profiles/me'
-      preLoaderRoute: typeof ProfilesMeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth/register': {
       id: '/auth/register'
       path: '/auth/register'
@@ -138,30 +179,105 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/tables': {
-      id: '/admin/tables'
-      path: '/admin/tables'
-      fullPath: '/admin/tables'
-      preLoaderRoute: typeof AdminTablesRouteImport
+    '/_protected/profiles': {
+      id: '/_protected/profiles'
+      path: '/profiles'
+      fullPath: '/profiles'
+      preLoaderRoute: typeof ProtectedProfilesRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/home': {
-      id: '/admin/home'
-      path: '/admin/home'
-      fullPath: '/admin/home'
-      preLoaderRoute: typeof AdminHomeRouteImport
+    '/_protected/profile': {
+      id: '/_protected/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProtectedProfileRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_protected/admin': {
+      id: '/_protected/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof ProtectedAdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_protected/profiles/me': {
+      id: '/_protected/profiles/me'
+      path: '/me'
+      fullPath: '/profiles/me'
+      preLoaderRoute: typeof ProtectedProfilesMeRouteImport
+      parentRoute: typeof ProtectedProfilesRouteRoute
+    }
+    '/_protected/profile/me': {
+      id: '/_protected/profile/me'
+      path: '/me'
+      fullPath: '/profile/me'
+      preLoaderRoute: typeof ProtectedProfileMeRouteImport
+      parentRoute: typeof ProtectedProfileRouteRoute
+    }
+    '/_protected/admin/tables': {
+      id: '/_protected/admin/tables'
+      path: '/tables'
+      fullPath: '/admin/tables'
+      preLoaderRoute: typeof ProtectedAdminTablesRouteImport
+      parentRoute: typeof ProtectedAdminRouteRoute
+    }
+    '/_protected/admin/home': {
+      id: '/_protected/admin/home'
+      path: '/home'
+      fullPath: '/admin/home'
+      preLoaderRoute: typeof ProtectedAdminHomeRouteImport
+      parentRoute: typeof ProtectedAdminRouteRoute
     }
   }
 }
 
+interface ProtectedAdminRouteRouteChildren {
+  ProtectedAdminHomeRoute: typeof ProtectedAdminHomeRoute
+  ProtectedAdminTablesRoute: typeof ProtectedAdminTablesRoute
+}
+
+const ProtectedAdminRouteRouteChildren: ProtectedAdminRouteRouteChildren = {
+  ProtectedAdminHomeRoute: ProtectedAdminHomeRoute,
+  ProtectedAdminTablesRoute: ProtectedAdminTablesRoute,
+}
+
+const ProtectedAdminRouteRouteWithChildren =
+  ProtectedAdminRouteRoute._addFileChildren(ProtectedAdminRouteRouteChildren)
+
+interface ProtectedProfileRouteRouteChildren {
+  ProtectedProfileMeRoute: typeof ProtectedProfileMeRoute
+}
+
+const ProtectedProfileRouteRouteChildren: ProtectedProfileRouteRouteChildren = {
+  ProtectedProfileMeRoute: ProtectedProfileMeRoute,
+}
+
+const ProtectedProfileRouteRouteWithChildren =
+  ProtectedProfileRouteRoute._addFileChildren(
+    ProtectedProfileRouteRouteChildren,
+  )
+
+interface ProtectedProfilesRouteRouteChildren {
+  ProtectedProfilesMeRoute: typeof ProtectedProfilesMeRoute
+}
+
+const ProtectedProfilesRouteRouteChildren: ProtectedProfilesRouteRouteChildren =
+  {
+    ProtectedProfilesMeRoute: ProtectedProfilesMeRoute,
+  }
+
+const ProtectedProfilesRouteRouteWithChildren =
+  ProtectedProfilesRouteRoute._addFileChildren(
+    ProtectedProfilesRouteRouteChildren,
+  )
+
 const rootRouteChildren: RootRouteChildren = {
-  AdminHomeRoute: AdminHomeRoute,
-  AdminTablesRoute: AdminTablesRoute,
+  ProtectedAdminRouteRoute: ProtectedAdminRouteRouteWithChildren,
+  ProtectedProfileRouteRoute: ProtectedProfileRouteRouteWithChildren,
+  ProtectedProfilesRouteRoute: ProtectedProfilesRouteRouteWithChildren,
   AuthAdminRoute: AuthAdminRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
-  ProfilesMeRoute: ProfilesMeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

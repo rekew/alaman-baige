@@ -5,6 +5,7 @@ import type { LoginRequest } from "@/entities/auth";
 import { loginAdmin } from "./api";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
+import { useStore } from "@/store/user-store/store";
 
 function AdminLoginPage() {
   const [credentials, setCredentials] = useState<LoginRequest>({
@@ -14,6 +15,7 @@ function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const fetchUser = useStore((state) => state.fetchUser);
 
   async function handleLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -21,11 +23,15 @@ function AdminLoginPage() {
     try {
       await loginAdmin(credentials);
 
-      navigate({
+      await fetchUser();
+
+      await navigate({
         to: "/admin/home",
       });
-    } catch (err: any) {
-      toast.error(err.message);
+      
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      toast.error(`Failed to login: ${message}`);
     } finally {
       setLoading(false);
     }
