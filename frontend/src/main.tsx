@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import "./index.css";
+import { Toaster } from "sonner";
 
 const router = createRouter({ routeTree });
 
@@ -14,6 +15,15 @@ declare module "@tanstack/react-router" {
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <>
+      <RouterProvider router={router} />
+      <Toaster
+        position="top-right"
+        richColors
+        closeButton
+        expand
+        duration={4000}
+      />
+    </>
   </StrictMode>,
 );

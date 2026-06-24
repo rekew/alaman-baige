@@ -3,23 +3,29 @@ import { ArrowRight, Lock, Phone, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { LoginRequest } from "@/entities/auth";
 import { loginAdmin } from "./api";
+import { toast } from "sonner";
+import { useNavigate } from "@tanstack/react-router";
 
 function AdminLoginPage() {
   const [credentials, setCredentials] = useState<LoginRequest>({
     phoneNumber: "",
     password: "",
   });
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   async function handleLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError(null);
     setLoading(true);
     try {
       await loginAdmin(credentials);
-    } catch (err) {
-      setError("Invalid credentials. Please try again.");
+
+      navigate({
+        to: "/admin/home",
+      });
+    } catch (err: any) {
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -113,12 +119,6 @@ function AdminLoginPage() {
                 />
               </div>
             </label>
-
-            {error && (
-              <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                {error}
-              </p>
-            )}
 
             <Button
               className="mt-2 w-full"
