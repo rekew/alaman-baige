@@ -17,6 +17,7 @@ import { Route as ProtectedProfileRouteRouteImport } from './app/routes/_protect
 import { Route as ProtectedAdminRouteRouteImport } from './app/routes/_protected/admin/route'
 import { Route as ProtectedProfilesMeRouteImport } from './app/routes/_protected/profiles/me'
 import { Route as ProtectedProfileMeRouteImport } from './app/routes/_protected/profile/me'
+import { Route as ProtectedProfileHomeRouteImport } from './app/routes/_protected/profile/home'
 import { Route as ProtectedAdminTablesRouteImport } from './app/routes/_protected/admin/tables'
 import { Route as ProtectedAdminHomeRouteImport } from './app/routes/_protected/admin/home'
 
@@ -60,6 +61,11 @@ const ProtectedProfileMeRoute = ProtectedProfileMeRouteImport.update({
   path: '/me',
   getParentRoute: () => ProtectedProfileRouteRoute,
 } as any)
+const ProtectedProfileHomeRoute = ProtectedProfileHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => ProtectedProfileRouteRoute,
+} as any)
 const ProtectedAdminTablesRoute = ProtectedAdminTablesRouteImport.update({
   id: '/tables',
   path: '/tables',
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/auth/register': typeof AuthRegisterRoute
   '/admin/home': typeof ProtectedAdminHomeRoute
   '/admin/tables': typeof ProtectedAdminTablesRoute
+  '/profile/home': typeof ProtectedProfileHomeRoute
   '/profile/me': typeof ProtectedProfileMeRoute
   '/profiles/me': typeof ProtectedProfilesMeRoute
 }
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/auth/register': typeof AuthRegisterRoute
   '/admin/home': typeof ProtectedAdminHomeRoute
   '/admin/tables': typeof ProtectedAdminTablesRoute
+  '/profile/home': typeof ProtectedProfileHomeRoute
   '/profile/me': typeof ProtectedProfileMeRoute
   '/profiles/me': typeof ProtectedProfilesMeRoute
 }
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/auth/register': typeof AuthRegisterRoute
   '/_protected/admin/home': typeof ProtectedAdminHomeRoute
   '/_protected/admin/tables': typeof ProtectedAdminTablesRoute
+  '/_protected/profile/home': typeof ProtectedProfileHomeRoute
   '/_protected/profile/me': typeof ProtectedProfileMeRoute
   '/_protected/profiles/me': typeof ProtectedProfilesMeRoute
 }
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/admin/home'
     | '/admin/tables'
+    | '/profile/home'
     | '/profile/me'
     | '/profiles/me'
   fileRoutesByTo: FileRoutesByTo
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/admin/home'
     | '/admin/tables'
+    | '/profile/home'
     | '/profile/me'
     | '/profiles/me'
   id:
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/_protected/admin/home'
     | '/_protected/admin/tables'
+    | '/_protected/profile/home'
     | '/_protected/profile/me'
     | '/_protected/profiles/me'
   fileRoutesById: FileRoutesById
@@ -214,6 +226,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedProfileMeRouteImport
       parentRoute: typeof ProtectedProfileRouteRoute
     }
+    '/_protected/profile/home': {
+      id: '/_protected/profile/home'
+      path: '/home'
+      fullPath: '/profile/home'
+      preLoaderRoute: typeof ProtectedProfileHomeRouteImport
+      parentRoute: typeof ProtectedProfileRouteRoute
+    }
     '/_protected/admin/tables': {
       id: '/_protected/admin/tables'
       path: '/tables'
@@ -245,10 +264,12 @@ const ProtectedAdminRouteRouteWithChildren =
   ProtectedAdminRouteRoute._addFileChildren(ProtectedAdminRouteRouteChildren)
 
 interface ProtectedProfileRouteRouteChildren {
+  ProtectedProfileHomeRoute: typeof ProtectedProfileHomeRoute
   ProtectedProfileMeRoute: typeof ProtectedProfileMeRoute
 }
 
 const ProtectedProfileRouteRouteChildren: ProtectedProfileRouteRouteChildren = {
+  ProtectedProfileHomeRoute: ProtectedProfileHomeRoute,
   ProtectedProfileMeRoute: ProtectedProfileMeRoute,
 }
 

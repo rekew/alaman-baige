@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { ArrowRight, Phone, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "@tanstack/react-router";
+import { useStore } from "@/store/user-store/store";
 import { loginUser } from "./api";
 
 type LoginRequest = {
@@ -9,6 +11,7 @@ type LoginRequest = {
 };
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [user, setUser] = useState<LoginRequest>({
     phoneNumber: "",
     password: "",
@@ -21,9 +24,8 @@ function LoginPage() {
 
     try {
       await loginUser(user);
-
-      // navigate("/")
-      console.log("Logged in");
+      await useStore.getState().fetchUser();
+      navigate({ to: "/profile/home" });
     } catch (error) {
       console.error("Login failed:", error);
     }
