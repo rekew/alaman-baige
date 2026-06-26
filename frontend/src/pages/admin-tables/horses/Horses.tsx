@@ -18,9 +18,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AddHorseModal } from "./AddHorseModal";
 
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
+
 export function Horses() {
   const [horses, setHorses] = useState<IHorse[]>([]);
   const [addHorseModalOpen, setAddHorseModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchHorses = async () => {
@@ -57,6 +63,7 @@ export function Horses() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>ID</TableHead>
+                    <TableHead>Image</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Breed</TableHead>
                     <TableHead>Gender</TableHead>
@@ -70,6 +77,21 @@ export function Horses() {
                   {horses.map((horse) => (
                     <TableRow key={horse.id}>
                       <TableCell>{horse.id}</TableCell>
+
+                      <TableCell>
+                        {horse.imageUrl ? (
+                          <img
+                            src={horse.imageUrl}
+                            alt={horse.name}
+                            onClick={() => setSelectedImage(horse.imageUrl ?? null)}
+                            className="h-24 w-24 cursor-pointer rounded-md object-cover transition-opacity hover:opacity-80"
+                          />
+                        ) : (
+                          <div className="flex h-24 w-24 items-center justify-center rounded-md border border-dashed text-xs text-muted-foreground">
+                            No image
+                          </div>
+                        )}
+                      </TableCell>
 
                       <TableCell className="font-medium">
                         {horse.name}
@@ -109,6 +131,21 @@ export function Horses() {
         open={addHorseModalOpen}
         onOpenChange={setAddHorseModalOpen}
       />
+
+      <Dialog
+        open={selectedImage !== null}
+        onOpenChange={() => setSelectedImage(null)}
+      >
+        <DialogContent className="max-w-6xl p-2">
+          {selectedImage && (
+            <img
+              src={selectedImage}
+              alt="Horse"
+              className="max-h-[90vh] w-full rounded-md object-contain"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

@@ -1,4 +1,4 @@
-using Backend.Models;
+using Backend.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Backend.Services.Tables;
@@ -18,7 +18,7 @@ public class HorseController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Horse>>> GetTable()
+    public async Task<ActionResult<List<HorseResponseDto>>> GetTable()
     {
         var horses = await _horseService.GetTable();
 
@@ -31,12 +31,11 @@ public class HorseController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> AddHorse(Horse horse)
+    public async Task<ActionResult> AddHorse([FromForm] CreateHorseDto horse)
     {
+        var result = await _horseService.AddHorse(horse);
 
-        var res = await _horseService.AddHorse(horse);
-
-        if (res)
+        if (result)
         {
             return Ok();
         }
@@ -47,7 +46,7 @@ public class HorseController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateHorse(
         int id,
-        [FromBody] Horse horse
+        [FromForm] UpdateHorseDto horse
     )
     {
         var result = await _horseService.UpdateHorse(id, horse);

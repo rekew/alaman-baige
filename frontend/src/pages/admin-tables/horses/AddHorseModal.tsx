@@ -20,35 +20,51 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { createHorse } from "./api";
+
 interface AddHorseModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function AddHorseModal({ open, onOpenChange }: AddHorseModalProps) {
+export function AddHorseModal({
+  open,
+  onOpenChange,
+}: AddHorseModalProps) {
   const [name, setName] = useState("");
   const [breed, setBreed] = useState("");
   const [gender, setGender] = useState("");
   const [date, setDate] = useState("");
   const [userId, setUserId] = useState("");
+  const [image, setImage] = useState<File | null>(null);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
 
-    const horse = {
-      name,
-      breed,
-      gender,
-      date,
-      userId: Number(userId),
-    };
+    const formData = new FormData();
 
-    console.log(horse);
+    formData.append("name", name);
+    formData.append("breed", breed);
+    formData.append("gender", gender);
+    formData.append("date", date);
+    formData.append("userId", userId);
+
+    if (image) {
+      formData.append("image", image);
+    }
+
+    await createHorse(formData);
+
+    console.log([...formData.entries()]);
 
     setName("");
     setBreed("");
     setGender("");
     setDate("");
     setUserId("");
+    setImage(null);
 
     onOpenChange(false);
   };
@@ -98,7 +114,6 @@ export function AddHorseModal({ open, onOpenChange }: AddHorseModalProps) {
 
               <SelectContent>
                 <SelectItem value="Male">Male</SelectItem>
-
                 <SelectItem value="Female">Female</SelectItem>
               </SelectContent>
             </Select>
@@ -129,6 +144,19 @@ export function AddHorseModal({ open, onOpenChange }: AddHorseModalProps) {
             />
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="image">Horse Image</Label>
+
+            <Input
+              id="image"
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                setImage(e.target.files?.[0] ?? null)
+              }
+            />
+          </div>
+
           <div className="flex justify-end gap-2 pt-2">
             <Button
               type="button"
@@ -138,7 +166,9 @@ export function AddHorseModal({ open, onOpenChange }: AddHorseModalProps) {
               Cancel
             </Button>
 
-            <Button type="submit">Create Horse</Button>
+            <Button type="submit">
+              Create Horse
+            </Button>
           </div>
         </form>
       </DialogContent>

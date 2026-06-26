@@ -4,5 +4,6 @@ export interface IHorse{
     breed: string,
     gender: string,
     date: Date,
-    userId: number
+    userId: number,
+    imageUrl?: string | null
 }
