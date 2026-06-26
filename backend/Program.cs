@@ -7,6 +7,7 @@ using Backend.Services;
 using Backend.Interfaces;
 using System.Text;
 using Backend.Services.Tables;
+using Amazon.S3;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +78,22 @@ builder.Services
         };
     });
 
+//Cloudflare R2
+builder.Services.AddSingleton<IAmazonS3>(_ =>
+{
+    var config = new AmazonS3Config
+    {
+        ServiceURL = builder.Configuration["CloudflareR2:EndpointUrl"],
+        ForcePathStyle = true
+    };
+
+    return new AmazonS3Client(
+        builder.Configuration["CloudflareR2:AccessKeyId"],
+        builder.Configuration["CloudflareR2:SecretAccessKey"],
+        config
+    );
+});
+
 //Cookies
 builder.Services.AddSingleton(new CookieOptions
 {
@@ -92,6 +109,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<HorseService>();
+builder.Services.AddScoped<AmazonS3>();
 builder.Services.AddScoped<Jwt>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
