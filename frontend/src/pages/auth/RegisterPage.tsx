@@ -2,12 +2,12 @@ import { useState } from "react";
 import { ArrowRight, Phone, ShieldCheck, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { RegisterRequest } from "@/entities/auth";
-import { registerUser } from "./api";
+import { registerUser, loginUser } from "./api";
 import { useNavigate } from "@tanstack/react-router";
+import { useStore } from "@/store/user-store/store";
 import { toast } from "sonner";
 
 function RegisterPage() {
-
   const navigate = useNavigate();
 
   async function handleRegisterSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -19,12 +19,12 @@ function RegisterPage() {
 
     try {
       await registerUser(user);
-
+      await loginUser({ phoneNumber: user.phoneNumber, password: user.password });
+      await useStore.getState().fetchUser();
       navigate({
-        to: "/auth/login",
+        to: "/profile/home",
       });
-    }
-    catch (error: any) {
+    } catch (error: any) {
       toast.error(error);
     }
   }
