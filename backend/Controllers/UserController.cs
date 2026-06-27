@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Backend.Services;
 using Microsoft.AspNetCore.Authorization;
+
+using System.Security.Claims;
+
+using Backend.Services;
 using Backend.DTOs;
 using Backend.Exceptions.UserRepositoryExceptions;
-
 [ApiController]
 [Route("api/users")]
 public class UserController : ControllerBase

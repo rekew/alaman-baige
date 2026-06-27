@@ -106,11 +106,18 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
 //Scope add
+
+//Services
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<HorseService>();
+builder.Services.AddScoped<StatisticService>();
+
+//Core
 builder.Services.AddScoped<AmazonS3>();
 builder.Services.AddScoped<Jwt>();
+
+//Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();

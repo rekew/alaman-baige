@@ -1,6 +1,7 @@
-using Backend.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using Backend.DTOs;
 using Backend.Services.Tables;
 
 namespace Backend.Controllers.Tables;

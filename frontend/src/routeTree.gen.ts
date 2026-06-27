@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './app/routes/__root'
+import { Route as IndexRouteImport } from './app/routes/index'
 import { Route as AuthRegisterRouteImport } from './app/routes/auth/register'
 import { Route as AuthLoginRouteImport } from './app/routes/auth/login'
 import { Route as AuthAdminRouteImport } from './app/routes/auth/admin'
@@ -21,6 +22,11 @@ import { Route as ProtectedProfileHomeRouteImport } from './app/routes/_protecte
 import { Route as ProtectedAdminTablesRouteImport } from './app/routes/_protected/admin/tables'
 import { Route as ProtectedAdminHomeRouteImport } from './app/routes/_protected/admin/home'
 
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/auth/register',
   path: '/auth/register',
@@ -78,6 +84,7 @@ const ProtectedAdminHomeRoute = ProtectedAdminHomeRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/admin': typeof ProtectedAdminRouteRouteWithChildren
   '/profile': typeof ProtectedProfileRouteRouteWithChildren
   '/profiles': typeof ProtectedProfilesRouteRouteWithChildren
@@ -91,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/profiles/me': typeof ProtectedProfilesMeRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/admin': typeof ProtectedAdminRouteRouteWithChildren
   '/profile': typeof ProtectedProfileRouteRouteWithChildren
   '/profiles': typeof ProtectedProfilesRouteRouteWithChildren
@@ -105,6 +113,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_protected/admin': typeof ProtectedAdminRouteRouteWithChildren
   '/_protected/profile': typeof ProtectedProfileRouteRouteWithChildren
   '/_protected/profiles': typeof ProtectedProfilesRouteRouteWithChildren
@@ -120,6 +129,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/admin'
     | '/profile'
     | '/profiles'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/profiles/me'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/admin'
     | '/profile'
     | '/profiles'
@@ -146,6 +157,7 @@ export interface FileRouteTypes {
     | '/profiles/me'
   id:
     | '__root__'
+    | '/'
     | '/_protected/admin'
     | '/_protected/profile'
     | '/_protected/profiles'
@@ -160,6 +172,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   ProtectedAdminRouteRoute: typeof ProtectedAdminRouteRouteWithChildren
   ProtectedProfileRouteRoute: typeof ProtectedProfileRouteRouteWithChildren
   ProtectedProfilesRouteRoute: typeof ProtectedProfilesRouteRouteWithChildren
@@ -170,6 +183,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/register': {
       id: '/auth/register'
       path: '/auth/register'
@@ -293,6 +313,7 @@ const ProtectedProfilesRouteRouteWithChildren =
   )
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   ProtectedAdminRouteRoute: ProtectedAdminRouteRouteWithChildren,
   ProtectedProfileRouteRoute: ProtectedProfileRouteRouteWithChildren,
   ProtectedProfilesRouteRoute: ProtectedProfilesRouteRouteWithChildren,

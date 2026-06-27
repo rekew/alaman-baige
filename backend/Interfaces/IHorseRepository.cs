@@ -5,6 +5,7 @@ namespace Backend.Interfaces;
 public interface IHorseRepository
 {
     Task<List<Horse>> GetTable();
+    Task<(int, int)> GetCount();
 
     Task<Horse?> GetById(int id);
 

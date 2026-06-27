@@ -20,6 +20,19 @@ public class HorseRepository : IHorseRepository
         return await _dbContext.Horses.ToListAsync();
     }
 
+    public async Task<(int, int)> GetCount()
+    {
+        var result = await _dbContext.Horses
+            .GroupBy(_ => 1)
+            .Select(g => new
+            {
+                HorseCount = g.Count(),
+                OwnerCount = g.Select(h => h.UserId).Distinct().Count()
+            })
+            .SingleAsync();
+        return (result.HorseCount, result.OwnerCount);
+    }
+
     public async Task AddHorse(Horse horse)
     {
         _dbContext.Horses.Add(horse);
